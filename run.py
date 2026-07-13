@@ -44,4 +44,9 @@ app = gr.mount_gradio_app(app, demo, path="/")
 
 if __name__ == "__main__":
     import uvicorn
+    try:
+        from spaces import zero
+        zero.startup()
+    except Exception as e:
+        print("ZeroGPU startup skipped (not running on HF Spaces or spaces package not installed)", e)
     uvicorn.run(app, host="0.0.0.0", port=7860)
