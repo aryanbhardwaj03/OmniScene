@@ -35,33 +35,9 @@ with gr.Blocks(title="OmniScene API") as demo:
     btn.click(fn=check_gpu_status, inputs=[], outputs=[status])
 
 
-# ---- Mount our FastAPI routes onto Gradio's internal FastAPI app ----
-# Gradio's Blocks exposes its internal FastAPI app via demo.app
-# We add CORS, static files, and all our API routes to it.
+# ---- Create custom FastAPI app ----
+from app.main import app
 
-demo.app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-os.makedirs(settings.STATIC_DIR, exist_ok=True)
-demo.app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
-demo.app.include_router(api_router, prefix=settings.API_V1_STR)
-
-
-@demo.app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-
-@demo.app.on_event("shutdown")
-async def shutdown_event():
-    await model_registry.unload_all()
-
-
-# ---- Launch via Gradio (ZeroGPU hooks into this) ----
-# DO NOT use uvicorn.run() — ZeroGPU requires demo.launch()
-demo.launch(server_name="0.0.0.0", server_port=7860)
+# ---- Mount Gradio into FastAPI ----
+# Exposing 'app' allows Hugging Face Spaces to serve the FastAPI app directly
+app = gr.mount_gradio_app(app, demo, path="/")
