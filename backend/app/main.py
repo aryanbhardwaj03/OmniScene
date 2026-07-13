@@ -37,6 +37,6 @@ async def startup_event():
 async def shutdown_event():
     await model_registry.unload_all()
 
-@app.get("/")
-def root():
-    return {"message": f"Welcome to {settings.PROJECT_NAME} API"}
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
