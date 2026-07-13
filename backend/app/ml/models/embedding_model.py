@@ -15,7 +15,9 @@ class Dinov2EmbeddingModel(BaseEmbeddingModel):
     
     def __init__(self):
         super().__init__(version="dinov2-base-v1")
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        # Force CPU execution for FastAPI routes on ZeroGPU 
+        # (ZeroGPU blocks CUDA access outside of @spaces.GPU Gradio events)
+        self.device = "cpu"
         self.model_id = "facebook/dinov2-base"
         
     def load(self) -> None:
