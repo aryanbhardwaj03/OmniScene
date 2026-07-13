@@ -19,3 +19,4 @@ scipy
 groq
 passlib[bcrypt]
 python-jose[cryptography]
+huggingface-hub<1.0.0
