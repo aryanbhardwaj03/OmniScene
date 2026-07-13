@@ -30,7 +30,8 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.on_event("startup")
 async def startup_event():
-    await model_registry.load_all()
+    # We load models lazily to avoid Hugging Face Spaces health-check timeouts!
+    pass
 
 @app.on_event("shutdown")
 async def shutdown_event():
