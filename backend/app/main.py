@@ -30,8 +30,14 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 
 @app.on_event("startup")
 async def startup_event():
-    # We load models lazily to avoid Hugging Face Spaces health-check timeouts!
-    pass
+    # Create database tables if they don't exist
+    from app.core.database import engine, Base
+    # Import models so Base.metadata knows about them
+    import app.models.user  # noqa
+    import app.models.analysis  # noqa
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    # Models are loaded lazily to avoid Hugging Face Spaces health-check timeouts!
 
 @app.on_event("shutdown")
 async def shutdown_event():
