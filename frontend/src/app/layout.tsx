@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Multi-Domain Visual Intelligence, Recognition & Health Screening Platform',
 }
 
+import { Analytics } from '@vercel/analytics/react';
+
 export default function RootLayout({
   children,
 }: {
@@ -22,6 +24,7 @@ export default function RootLayout({
         <main className="flex-1 flex flex-col">
           {children}
         </main>
+        <Analytics />
       </body>
     </html>
   )
