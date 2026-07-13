@@ -3,7 +3,7 @@ import { useAuthStore } from './store';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
-function getAuthHeaders() {
+function getAuthHeaders(): Record<string, string> {
   const token = useAuthStore.getState().token;
   return token ? { 'Authorization': `Bearer ${token}` } : {};
 }
