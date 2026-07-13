@@ -37,6 +37,10 @@ async def startup_event():
 async def shutdown_event():
     await model_registry.unload_all()
 
+@app.get("/")
+def root():
+    return {"status": "running", "app": "OmniScene API", "docs": "/docs"}
+
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
