@@ -1,0 +1,30 @@
+[project]
+name = "omniscene"
+version = "0.1.0"
+description = "Multi-Domain Visual Intelligence, Recognition & Health Screening Platform"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi[standard]",
+    "uvicorn[standard]",
+    "sqlalchemy[asyncio]",
+    "asyncpg",
+    "alembic",
+    "pydantic-settings",
+    "python-multipart",
+    "aiofiles",
+    "torch",
+    "torchvision",
+    "transformers",
+    "ultralytics",
+    "opencv-python-headless",
+    "pillow",
+    "grad-cam",
+    "faiss-cpu",
+    "numpy",
+    "scipy",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
