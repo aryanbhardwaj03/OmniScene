@@ -4,11 +4,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.core.database import get_db
-from app.core.security import oauth2_scheme
+from app.core.security import oauth2_scheme, oauth2_scheme_optional
 from app.config import settings
 from app.models.user import UserDB
 
-async def get_current_user_optional(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
+async def get_current_user_optional(token: str = Depends(oauth2_scheme_optional), db: AsyncSession = Depends(get_db)):
     if not token:
         return None
     try:
