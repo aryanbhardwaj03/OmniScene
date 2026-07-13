@@ -1,40 +1,91 @@
----
-title: OmniScene
-emoji: 🌿
-colorFrom: green
-colorTo: blue
-sdk: gradio
-sdk_version: 4.40.0
-app_file: run.py
-pinned: false
----
+# 🌿 OmniScene
 
-# OmniScene
+**Multi-Domain Visual Intelligence, Recognition & Health Screening Platform**
 
-Multi-Domain Visual Intelligence, Recognition & Health Screening Platform
+OmniScene is an advanced AI-powered platform that analyzes images of plants, animals, and scenes to identify species, detect diseases, provide management advice, and perform visual similarity searches.
 
-## Features
+## ✨ Features
 
-- **Plant Species Recognition**: Identify plants using transfer learning.
-- **Plant Disease Detection**: Analyze plants for diseases (e.g. Early Blight).
-- **Explainable AI (Grad-CAM)**: Visualize what regions the model focused on.
-- **Similarity Search**: Find similar previously analyzed images using DINOv2 embeddings and FAISS.
+- **Deep Image Analysis**: Upload images to automatically categorize the scene (plant, animal, etc.) and identify species (common and scientific names).
+- **Health & Disease Screening**: Instantly detect diseases or health issues in plants and pets, providing a list of symptoms and actionable management advice.
+- **Visual Similarity Search**: Uses advanced vector embeddings (DINOv2) to match your uploaded image against previously analyzed cases in real-time.
+- **Interactive AI Chat**: Chat directly with an AI assistant about your specific image. Ask follow-up questions about plant care, pet health, or general scene details.
+- **Analysis History**: Securely save and browse your past analysis results.
 
-## Tech Stack
+## 🛠️ Technology Stack
 
-- **Backend**: FastAPI, PyTorch, HuggingFace Transformers, FAISS, PostgreSQL, SQLAlchemy
-- **Frontend**: Next.js 15, React, TailwindCSS, Zustand
-- **ML Models**: EfficientNet, ResNet (via HuggingFace PlantVillage fine-tunes), CLIP, DINOv2
+### Frontend (Vercel)
+- **Framework**: Next.js 15 (React 19)
+- **Styling**: Tailwind CSS & custom UI components
+- **State Management**: Zustand
+- **Analytics**: Vercel Analytics
 
-## Running Locally
+### Backend (Hugging Face Spaces)
+- **Framework**: FastAPI (Python)
+- **Database**: PostgreSQL (Supabase) via SQLAlchemy & Asyncpg
+- **Auth**: JWT-based authentication
+- **AI Models**:
+  - **Vision LLM**: Meta Llama-3 Vision (via Groq API) for high-speed, high-accuracy scene analysis and interactive chat.
+  - **Embeddings**: Facebook DINOv2 (local inference) for highly accurate visual vector similarity.
+  - **Vector Search**: FAISS (Facebook AI Similarity Search)
 
-1. Create a `backend/.env` file with any overrides (optional).
-2. Create a `frontend/.env.local` with `NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1`
-3. Run `docker-compose up -d`
-4. Visit `http://localhost:3000`
+## 🚀 Architecture Overview
 
-## Architecture
+1. The **Next.js frontend** is deployed on Vercel and handles the user interface, state, and file uploads.
+2. The **FastAPI backend** is hosted on Hugging Face Spaces (CPU Basic) to allow local inference of embedding models alongside REST endpoints.
+3. When an image is uploaded, the backend simultaneously:
+   - Queries the **Groq API** with Llama-3 Vision for structured JSON data (species, disease, management).
+   - Runs **DINOv2** locally to generate a high-dimensional vector embedding.
+   - Searches the **FAISS** index for visually similar past cases.
+4. Data is stored securely in a **Supabase PostgreSQL** database.
 
-![architecture flow](https://via.placeholder.com/800x400?text=OmniScene+Architecture)
+## 💻 Local Setup
 
-The backend uses a smart router that routes images through CLIP to determine the scene category, then dispatches to specialized models.
+### Prerequisites
+- Node.js 18+
+- Python 3.10+
+- A [Groq](https://console.groq.com) API Key
+- A [Supabase](https://supabase.com/) PostgreSQL database
+
+### 1. Backend Setup
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Create a `.env` file in the `backend` folder:
+```env
+DATABASE_URL=postgresql+asyncpg://user:password@host:5432/postgres
+SECRET_KEY=your_super_secret_jwt_key
+GROQ_API_KEY=gsk_your_groq_api_key
+```
+
+Run the backend:
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+### 2. Frontend Setup
+
+```bash
+cd frontend
+npm install
+```
+
+Create a `.env.local` file in the `frontend` folder:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
+
+Run the frontend:
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+## 📜 License
+MIT License
